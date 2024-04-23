@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
                      '<a href="https://carto.com/attribution">CARTO</a>'
     }).addTo(map);
 
+    const circle_size=5
     // Function to add markers
     function addMarkers(group) {
         group.forEach(function(loc) {
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 color: 'lime',
                 fillColor: 'forestgreen',
                 fillOpacity: 0.5,
-                radius: 8
+                radius: circle_size
             }).addTo(map);
             marker.getElement().classList.add('blink-marker');
         });
@@ -34,18 +35,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     color: 'lime',
                     fillColor: 'forestgreen',
                     fillOpacity: 0.5,
-                    radius: 8
+                    radius: circle_size
                 }).addTo(map);
                 marker.getElement().classList.add('blink-marker');
-            }, Math.random() * 4000 + 1000); // Random delay between 1 to 5 seconds
+            }, Math.random() * 24000 + 1000); 
         });
     }
 
-    // Set the initial group to display 15 locations immediately
-    var immediateGroup = locations.slice(0, 15);
+    // Calculate the number of initial markers based on a percentage of the total locations
+    var initialDisplayPercent = 28; // Percentage of locations to display immediately
+    var initialDisplayCount = Math.floor(locations.length * (initialDisplayPercent / 100));
+    var immediateGroup = locations.slice(0, initialDisplayCount);
     addMarkers(immediateGroup); // Add immediate markers
 
     // All remaining locations will be added with delays
-    var remainingGroup = locations.slice(15); 
+    var remainingGroup = locations.slice(initialDisplayCount); 
     addMarkersWithDelay(remainingGroup); // Add remaining markers with delays
 });
