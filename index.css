@@ -1,0 +1,22 @@
+html, body {
+    height: 100%; /* Ensures the full height of the viewport is used */
+    margin: 0;    /* Removes any default margin */
+    padding: 0;   /* Removes any default padding */
+    overflow: hidden; /* Prevents scrollbars from appearing */
+}
+
+#map {
+    height: 100vh; /* Full viewport height */
+    width: 100vw;  /* Full viewport width */
+    background-color: #262626; 
+}
+
+.blink-marker {
+    animation: blinker 3.5s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0.3;
+    }
+}
