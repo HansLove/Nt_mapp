@@ -14,26 +14,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }).addTo(map);
 
     const circle_size=5
+    const border_size=0.4
+    const bg_color='forestgreen'
+    const border_color='lime'
     // Function to add markers
     function addMarkers(group) {
         group.forEach(function(loc) {
             var marker = L.circleMarker(loc, {
-                color: 'lime',
-                fillColor: 'forestgreen',
+                color: border_color,
+                fillColor: bg_color,
                 fillOpacity: 0.5,
-                radius: circle_size
+                radius: circle_size,
+                weight: border_size // Border width of the circle in pixels
+                
             }).addTo(map);
             marker.getElement().classList.add('blink-marker');
         });
     }
-
+    
     // Function to add markers with random delays
     function addMarkersWithDelay(group) {
         group.forEach(function(loc) {
             setTimeout(function() {
                 var marker = L.circleMarker(loc, {
-                    color: 'lime',
-                    fillColor: 'forestgreen',
+                    color: border_color,
+                    fillColor: bg_color,
+                    weight: border_size, // Border width of the circle in pixels
                     fillOpacity: 0.5,
                     radius: circle_size
                 }).addTo(map);
