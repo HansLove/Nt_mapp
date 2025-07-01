@@ -19,7 +19,17 @@
         <h2>Trading Info</h2>
         <p><strong>Open Trades:</strong> <span id="openTrades">0</span></p>
         <p><strong>PnL:</strong> <span id="pnl">0.00</span></p>
+        <canvas id="pnlChart" width="200" height="40"></canvas>
+
     </div>
+    
+    <div id="traderSummary" class="summary-panel" style="display:none;">
+        <h3 id="summaryName">Trader</h3>
+        <p><strong>PnL:</strong> <span id="summaryPnL"></span></p>
+        <p><strong>Trades:</strong></p>
+        <ul id="tradeList"></ul>
+      </div>
+      
 
 
     <div id="adminPanel" class="modal">
@@ -64,5 +74,7 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>
