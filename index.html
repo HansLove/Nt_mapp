@@ -1,80 +1,82 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AT Academy</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="./index.css" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
-
+  <meta charset="UTF-8" />
+  <title>3D Trader Globe</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; }
+    canvas { display: block; }
+  </style>
 </head>
 <body>
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.min.js"></script>
+
+  <!-- OrbitControls -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.121.1/examples/js/controls/OrbitControls.min.js"></script>
+
+  <!-- three-globe -->
+  <!-- <script src="https://unpkg.com/three-globe@2.26.3/dist/three-globe.min.js"></script> -->
+  <script src="https://unpkg.com/three-globe@2.21.2/dist/three-globe.min.js"></script>
 
 
-    <div id="tradingInfo">
-        <h2>Trading Info</h2>
-        <p><strong>Open Trades:</strong> <span id="openTrades">0</span></p>
-        <p><strong>PnL:</strong> <span id="pnl">0.00</span></p>
-        <canvas id="pnlChart" width="200" height="40"></canvas>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const locations = [
+        [50.0755, 14.4378], [59.3293, 18.0686], [60.1699, 24.9384],
+        [48.2082, 16.3738], [47.4979, 19.0402], [41.9028, 12.4964],
+        [40.7128, -74.0060], [19.4326, -99.1332], [35.6895, 139.6917],
+        [-34.6037, -58.3816], [52.3676, 4.9041], [43.6532, -79.3832],
+        [28.6139, 77.2090], [41.3851, 2.1734]
+      ];
 
-    </div>
-    
-    <div id="traderSummary" class="summary-panel" style="display:none;">
-        <h3 id="summaryName">Trader</h3>
-        <p><strong>PnL:</strong> <span id="summaryPnL"></span></p>
-        <p><strong>Trades:</strong></p>
-        <ul id="tradeList"></ul>
-      </div>
-      
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 250;
 
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
 
-    <div id="adminPanel" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Admin Panel</h2>
-            <p>Please enter the admin password:</p>
-            <input type="password" id="adminPassword" placeholder="Enter password">
-            <button onclick="checkPassword()">Login</button>
-            <div id="adminControls" style="display:none;">
-                <p>
-                    <label>Open Trades: <input type="number" id="adminOpenTrades" value="0"></label>
-                </p>
-                <p>
-                    <label>PnL: <input type="number" id="adminPnL" value="0.00" step="0.01"></label>
-                </p>
-                <p>
-                    <label>Fluctuation Range for Open Trades (min-max): 
-                        <input type="number" id="minOpenTradesChange" placeholder="Min" style="width: 60px;"> - 
-                        <input type="number" id="maxOpenTradesChange" placeholder="Max" style="width: 60px;">
-                    </label>
-                </p>
-                <p>
-                    <label>Fluctuation Range for PnL (min-max): 
-                        <input type="number" id="minPnLChange" placeholder="Min" style="width: 60px;"> - 
-                        <input type="number" id="maxPnLChange" placeholder="Max" style="width: 60px;">
-                    </label>
-                </p>
-                <button onclick="updateAdminValues()">Update Values</button>
-            </div>
-            
-        </div>
-    </div>
-    
+      // ✅ USA window.ThreeGlobe
+      const globe = new ThreeGlobe()
+      // const globe = new window.ThreeGlobe()
+        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+        .pointsData(locations.map(loc => ({
+          lat: loc[0],
+          lng: loc[1],
+          size: 0.8,
+          color: 'limegreen'
+        })))
+        .pointAltitude('size')
+        .pointColor('color');
 
-    <div id="map"></div>
-    
-    
-    <script src="./locations.js"></script>
-    <script src="./logic.js"></script>
-    <script src="./trade_data.js"></script>
+      scene.add(globe);
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      const ambientLight = new THREE.AmbientLight(0xbbbbbb);
+      scene.add(ambientLight);
 
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+      directionalLight.position.set(1, 1, 1);
+      scene.add(directionalLight);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableZoom = true;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        globe.rotation.y += 0.0015;
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    });
+  </script>
 </body>
 </html>
