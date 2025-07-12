@@ -120,7 +120,9 @@ document.addEventListener('DOMContentLoaded', function () {
         pnl: parseFloat((Math.random() * 400 - 200).toFixed(2)),
         trades: generateFakeTrades()
       }));
-      
+
+
+
 
     // Transforma los puntos simples [lat, lng] en objetos con datos ficticios
     // const enrichedLocations = locations.map(([lat, lng], index) => {
@@ -202,10 +204,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Límite realista para no salirse del rango
     if (currentPnL > 300) currentPnL = 300;
     if (currentPnL < -300) currentPnL = -300;
-
     
     updatePnL(currentPnL);
     }, 3000);
+
+
+
+    
 
   });
   

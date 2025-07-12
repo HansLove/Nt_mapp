@@ -72,18 +72,54 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
+
+      const generateFakeTrades = () => {
+        const count = Math.floor(Math.random() * 5) + 3; // 3 a 7 trades
+        return Array.from({ length: count }, (_, i) => ({
+          id: i + 1,
+          symbol: ['EURUSD', 'GBPJPY', 'BTCUSD'][Math.floor(Math.random() * 3)],
+          profit: parseFloat((Math.random() * 300 - 150).toFixed(2))
+        }));
+      };
+      
+
+      const enrichedLocations = locations.map(([lat, lng], index) => ({
+        lat,
+        lng,
+        username: `Trader #${index + 1}`,
+        pnl: parseFloat((Math.random() * 400 - 200).toFixed(2)),
+        trades: generateFakeTrades()
+      }));
+
+
+      let globePoints = enrichedLocations.map(loc => ({
+        ...loc,
+        size: 0.02,
+        color: loc.pnl >= 0 ? 'limegreen' : 'crimson'
+      }));
+      
       const globe = new ThreeGlobe()
         .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
-        .pointsData(locations.map(loc => ({
-          lat: loc[0],
-          lng: loc[1],
-          size: 0.02,
-          color: 'limegreen'
-        })))
+        .pointsData(globePoints)
         .pointAltitude('size')
         .pointColor('color');
 
+
+        setInterval(() => {
+        globePoints.forEach(point => {
+          const change = (Math.random() - 0.5) * 100;
+          point.pnl += change;
+          if (point.pnl > 400) point.pnl = 400;
+          if (point.pnl < -400) point.pnl = -400;
+      
+          point.color = point.pnl >= 0 ? 'limegreen' : 'crimson';
+        });
+      
+        globe.pointsData([...globePoints]); // Refresca visualmente los puntos
+      }, 1000);
       scene.add(globe);
+
+
 
       const ambientLight = new THREE.AmbientLight(0xbbbbff);
       scene.add(ambientLight);
